@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Join Crew - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="join-crew-header text-center mb-5">
+                <h1 class="text-pink mb-3">
+                    <i class="fas fa-users me-2"></i>Join the Crew
+                </h1>
+                <p class="lead text-light">
+                    Become a writer and share your passion for rap music with our community
+                </p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <h4>Share Your Voice</h4>
+                        <p>Write about your favorite artists, albums, and the latest trends in rap music.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h4>Discover New Talent</h4>
+                        <p>Help the community discover emerging artists and hidden gems in the rap scene.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4>Engage with Readers</h4>
+                        <p>Build a following and engage with other rap enthusiasts through your content.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>Build Your Reputation</h4>
+                        <p>Gain recognition as a trusted voice in the rap music community.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="writer-requirements mb-5">
+                <h3 class="text-pink mb-3">What We're Looking For</h3>
+                <div class="requirements-list">
+                    <div class="requirement-item">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <span>Passion for rap music and hip-hop culture</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <span>Ability to write engaging and informative content</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <span>Knowledge of current rap trends and artists</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <span>Commitment to quality and original content</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <span>Respect for community guidelines and values</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-categories mb-5">
+                <h3 class="text-pink mb-3">Content Categories</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <div class="category-info">
+                                <h5>News</h5>
+                                <p>Latest happenings in the rap industry, artist updates, and breaking news.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <i class="fas fa-compact-disc"></i>
+                            </div>
+                            <div class="category-info">
+                                <h5>Album Reviews</h5>
+                                <p>In-depth analysis and reviews of new and classic rap albums.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="category-info">
+                                <h5>Song Reviews</h5>
+                                <p>Track-by-track breakdowns and critical analysis of individual songs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="category-info">
+                                <h5>Discover New Artists</h5>
+                                <p>Spotlight emerging talent and introduce readers to new artists.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_writer or current_user.is_admin %}
+                    <div class="text-center">
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            You're already part of the crew! Start creating amazing content.
+                        </div>
+                        <a href="{{ url_for('create_post') }}" class="btn btn-pink btn-lg">
+                            <i class="fas fa-plus me-2"></i>Create Your First Post
+                        </a>
+                    </div>
+                {% elif current_user.writer_request_pending %}
+                    <div class="text-center">
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock me-2"></i>
+                            Your writer request is pending approval. We'll notify you once it's reviewed.
+                        </div>
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-pink">
+                            View Profile
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center">
+                        <div class="request-writer-section">
+                            <h3 class="text-pink mb-3">Ready to Join?</h3>
+                            <p class="mb-4">Submit your request to become a writer and start sharing your rap music insights with our community.</p>
+                            <form method="POST" action="{{ url_for('request_writer') }}">
+                                <button type="submit" class="btn btn-pink btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Request Writer Access
+                                </button>
+                            </form>
+                            <p class="text-muted mt-3">
+                                <small>Your request will be reviewed by our admin team. This usually takes 1-2 days.</small>
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You need to be logged in to request writer access.
+                    </div>
+                    <a href="{{ url_for('register') }}" class="btn btn-pink btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-pink btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

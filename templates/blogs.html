@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Blogs - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header mb-4">
+                <h1 class="text-pink">
+                    <i class="fas fa-blog me-2"></i>All Blogs
+                </h1>
+                <p class="text-muted">Explore our collection of rap music content</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="filter-tabs">
+                <a href="{{ url_for('blogs') }}" class="filter-tab {% if not current_category %}active{% endif %}">
+                    All Categories
+                </a>
+                {% for category in categories %}
+                    <a href="{{ url_for('blogs', category=category.name) }}" 
+                       class="filter-tab {% if current_category == category.name %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="sort-options">
+                <div class="dropdown">
+                    <button class="btn btn-outline-pink dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-sort me-1"></i>
+                        Sort by: {% if current_sort == 'popularity' %}Popularity{% else %}Latest{% endif %}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('blogs', category=current_category, sort='date') }}">
+                                Latest
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('blogs', category=current_category, sort='popularity') }}">
+                                Popularity
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Posts -->
+    {% if posts %}
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="blog-card">
+                        <div class="blog-card-body">
+                            <div class="blog-meta mb-2">
+                                <span class="badge badge-category">{{ post.category.name }}</span>
+                                <span class="blog-date">{{ post.date_published.strftime('%b %d, %Y') }}</span>
+                            </div>
+                            <h5 class="blog-title">
+                                <a href="{{ url_for('blog_detail', post_id=post.id) }}">{{ post.title }}</a>
+                            </h5>
+                            <p class="blog-summary">{{ post.summary or (post.content[:150] + '...') }}</p>
+                            <div class="blog-footer">
+                                <div class="blog-author">
+                                    <i class="fas fa-user me-1"></i>{{ post.author.username }}
+                                    {% if post.author.is_admin %}
+                                        <span class="badge badge-admin ms-1">Admin</span>
+                                    {% elif post.author.is_writer %}
+                                        <span class="badge badge-writer ms-1">Writer</span>
+                                    {% endif %}
+                                </div>
+                                <div class="blog-votes">
+                                    <span class="vote-count">
+                                        <i class="fas fa-arrow-up text-success me-1"></i>{{ post.upvotes }}
+                                        <i class="fas fa-arrow-down text-danger ms-2 me-1"></i>{{ post.downvotes }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-search text-muted" style="font-size: 4rem;"></i>
+            <h3 class="text-muted mt-3">No blogs found</h3>
+            <p class="text-muted">
+                {% if current_category %}
+                    No blogs in the "{{ current_category }}" category yet.
+                {% else %}
+                    No blogs available at the moment.
+                {% endif %}
+            </p>
+            <a href="{{ url_for('blogs') }}" class="btn btn-outline-pink">View All Blogs</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Add smooth scrolling for filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            // Add loading state
+            this.style.opacity = '0.7';
+        });
+    });
+</script>
+{% endblock %}

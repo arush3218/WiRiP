@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header mb-4">
+        <h1 class="text-pink">
+            <i class="fas fa-cogs me-2"></i>Admin Dashboard
+        </h1>
+        <p class="text-muted">Manage posts, users, and site content</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon users">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ stats.total_users }}</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon posts">
+                    <i class="fas fa-blog"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ stats.total_posts }}</h3>
+                    <p>Published Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ stats.pending_posts }}</h3>
+                    <p>Pending Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon requests">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ stats.writer_requests }}</h3>
+                    <p>Writer Requests</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Pending Posts -->
+        <div class="col-lg-8">
+            <div class="admin-section">
+                <div class="section-header">
+                    <h3 class="text-pink">
+                        <i class="fas fa-clock me-2"></i>Pending Posts
+                        <span class="badge badge-pending ms-2">{{ pending_posts|length }}</span>
+                    </h3>
+                </div>
+
+                {% if pending_posts %}
+                    <div class="pending-posts">
+                        {% for post in pending_posts %}
+                            <div class="pending-post-item">
+                                <div class="post-header">
+                                    <h5 class="post-title">{{ post.title }}</h5>
+                                    <div class="post-meta">
+                                        <span class="badge badge-category">{{ post.category.name }}</span>
+                                        <span class="post-author">by {{ post.author.username }}</span>
+                                        <span class="post-date">{{ post.date_created.strftime('%b %d, %Y') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="post-summary">
+                                    <p>{{ post.summary or (post.content[:200] + '...') }}</p>
+                                </div>
+
+                                <div class="post-actions">
+                                    <button class="btn btn-success btn-sm me-2" 
+                                            onclick="approvePost({{ post.id }})">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-danger btn-sm me-2" 
+                                            onclick="rejectPost({{ post.id }})">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" 
+                                            onclick="previewPost({{ post.id }})">
+                                        <i class="fas fa-eye me-1"></i>Preview
+                                    </button>
+                                </div>
+
+                                <!-- Preview content (hidden by default) -->
+                                <div class="post-preview" id="preview-{{ post.id }}" style="display: none;">
+                                    <div class="preview-content">
+                                        {{ post.content | nl2br | safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center py-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No pending posts</h5>
+                        <p class="text-muted">All posts are up to date!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Writer Requests -->
+        <div class="col-lg-4">
+            <div class="admin-section">
+                <div class="section-header">
+                    <h3 class="text-pink">
+                        <i class="fas fa-user-plus me-2"></i>Writer Requests
+                        <span class="badge badge-pending ms-2">{{ writer_requests|length }}</span>
+                    </h3>
+                </div>
+
+                {% if writer_requests %}
+                    <div class="writer-requests">
+                        {% for user in writer_requests %}
+                            <div class="writer-request-item">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <h6>{{ user.username }}</h6>
+                                        <p class="text-muted mb-1">{{ user.email }}</p>
+                                        <small class="text-muted">
+                                            Joined {{ user.date_joined.strftime('%b %Y') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="request-actions mt-3">
+                                    <button class="btn btn-success btn-sm me-2" 
+                                            onclick="approveWriter({{ user.id }})">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" 
+                                            onclick="rejectWriter({{ user.id }})">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center py-4">
+                        <i class="fas fa-users text-muted" style="font-size: 2rem;"></i>
+                        <h6 class="text-muted mt-2">No pending requests</h6>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function approvePost(postId) {
+    if (confirm('Are you sure you want to approve this post?')) {
+        window.location.href = `/admin/approve-post/${postId}`;
+    }
+}
+
+function rejectPost(postId) {
+    if (confirm('Are you sure you want to reject this post? This action cannot be undone.')) {
+        window.location.href = `/admin/reject-post/${postId}`;
+    }
+}
+
+function previewPost(postId) {
+    const preview = document.getElementById(`preview-${postId}`);
+    if (preview.style.display === 'none') {
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+function approveWriter(userId) {
+    if (confirm('Are you sure you want to approve this writer request?')) {
+        window.location.href = `/admin/approve-writer/${userId}`;
+    }
+}
+
+function rejectWriter(userId) {
+    if (confirm('Are you sure you want to reject this writer request?')) {
+        window.location.href = `/admin/reject-writer/${userId}`;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Blog Header -->
+            <div class="blog-header mb-4">
+                <div class="blog-meta mb-3">
+                    <span class="badge badge-category">{{ post.category.name }}</span>
+                    <span class="blog-date ms-2">{{ post.date_published.strftime('%B %d, %Y') }}</span>
+                </div>
+                <h1 class="blog-title-detail text-pink">{{ post.title }}</h1>
+                <div class="blog-author-info mt-3">
+                    <div class="author-details">
+                        <i class="fas fa-user me-2"></i>
+                        <span class="author-name">{{ post.author.username }}</span>
+                        {% if post.author.is_admin %}
+                            <span class="badge badge-admin ms-2">Admin</span>
+                        {% elif post.author.is_writer %}
+                            <span class="badge badge-writer ms-2">Writer</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Content -->
+            <div class="blog-content mb-4">
+                {{ post.content | nl2br | safe }}
+            </div>
+
+            <!-- Voting Section -->
+            {% if current_user.is_authenticated %}
+                <div class="voting-section mb-4">
+                    <div class="vote-buttons">
+                        <button class="vote-btn upvote-btn {% if user_vote and user_vote.is_upvote %}active{% endif %}" 
+                                data-post-id="{{ post.id }}" 
+                                data-vote-type="true">
+                            <i class="fas fa-arrow-up"></i>
+                            <span class="vote-count" id="upvote-count">{{ post.upvotes }}</span>
+                        </button>
+                        <button class="vote-btn downvote-btn {% if user_vote and not user_vote.is_upvote %}active{% endif %}" 
+                                data-post-id="{{ post.id }}" 
+                                data-vote-type="false">
+                            <i class="fas fa-arrow-down"></i>
+                            <span class="vote-count" id="downvote-count">{{ post.downvotes }}</span>
+                        </button>
+                    </div>
+                    <div class="score-display">
+                        Score: <span id="score-count" class="text-pink">{{ post.score }}</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="voting-section-guest mb-4">
+                    <div class="vote-display">
+                        <span class="vote-stat">
+                            <i class="fas fa-arrow-up text-success"></i> {{ post.upvotes }}
+                        </span>
+                        <span class="vote-stat ms-3">
+                            <i class="fas fa-arrow-down text-danger"></i> {{ post.downvotes }}
+                        </span>
+                        <span class="score-display ms-3">
+                            Score: <span class="text-pink">{{ post.score }}</span>
+                        </span>
+                    </div>
+                    <p class="text-muted mt-2">
+                        <a href="{{ url_for('login') }}" class="text-pink">Login</a> to vote on this post
+                    </p>
+                </div>
+            {% endif %}
+
+            <!-- Share Section -->
+            <div class="share-section mb-4">
+                <h5 class="text-pink mb-3">Share this post</h5>
+                <div class="share-buttons">
+                    <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.url }}" 
+                       target="_blank" class="share-btn twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" 
+                       target="_blank" class="share-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.reddit.com/submit?url={{ request.url }}&title={{ post.title }}" 
+                       target="_blank" class="share-btn reddit">
+                        <i class="fab fa-reddit"></i>
+                    </a>
+                    <button class="share-btn copy-link" onclick="copyLink()">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="blog-navigation">
+                <a href="{{ url_for('blogs') }}" class="btn btn-outline-pink">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Blogs
+                </a>
+                <a href="{{ url_for('blogs', category=post.category.name) }}" class="btn btn-pink ms-2">
+                    More {{ post.category.name }}
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sidebar">
+                <!-- Author Info -->
+                <div class="sidebar-card">
+                    <h5 class="text-pink mb-3">About the Author</h5>
+                    <div class="author-card">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h6>{{ post.author.username }}</h6>
+                            {% if post.author.is_admin %}
+                                <span class="badge badge-admin">Admin</span>
+                            {% elif post.author.is_writer %}
+                                <span class="badge badge-writer">Writer</span>
+                            {% endif %}
+                            <p class="text-muted">Member since {{ post.author.date_joined.strftime('%B %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Categories -->
+                <div class="sidebar-card">
+                    <h5 class="text-pink mb-3">Explore Categories</h5>
+                    <div class="category-links">
+                        <a href="{{ url_for('blogs', category='News') }}" class="category-link">
+                            <i class="fas fa-newspaper me-2"></i>News
+                        </a>
+                        <a href="{{ url_for('blogs', category='Album Review') }}" class="category-link">
+                            <i class="fas fa-compact-disc me-2"></i>Album Reviews
+                        </a>
+                        <a href="{{ url_for('blogs', category='Song Review') }}" class="category-link">
+                            <i class="fas fa-music me-2"></i>Song Reviews
+                        </a>
+                        <a href="{{ url_for('blogs', category='Discover New Artist') }}" class="category-link">
+                            <i class="fas fa-star me-2"></i>Discover Artists
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Voting functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const voteButtons = document.querySelectorAll('.vote-btn');
+    
+    voteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const isUpvote = this.dataset.voteType === 'true';
+            
+            fetch('/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    post_id: parseInt(postId),
+                    is_upvote: isUpvote
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update vote counts
+                document.getElementById('upvote-count').textContent = data.upvotes;
+                document.getElementById('downvote-count').textContent = data.downvotes;
+                document.getElementById('score-count').textContent = data.score;
+                
+                // Update button states
+                const upvoteBtn = document.querySelector('.upvote-btn');
+                const downvoteBtn = document.querySelector('.downvote-btn');
+                
+                upvoteBtn.classList.remove('active');
+                downvoteBtn.classList.remove('active');
+                
+                // Add active class based on current vote
+                if (isUpvote && this.classList.contains('active')) {
+                    // Removing upvote
+                } else if (!isUpvote && this.classList.contains('active')) {
+                    // Removing downvote
+                } else {
+                    this.classList.add('active');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+
+// Copy link functionality
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        // Show temporary success message
+        const copyBtn = document.querySelector('.copy-link');
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.classList.add('success');
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+            copyBtn.classList.remove('success');
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

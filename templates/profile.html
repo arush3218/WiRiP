@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <!-- User Info Card -->
+            <div class="profile-card">
+                <div class="profile-header text-center">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="text-pink">{{ current_user.username }}</h3>
+                    <div class="profile-badges">
+                        {% if current_user.is_admin %}
+                            <span class="badge badge-admin">Admin</span>
+                        {% elif current_user.is_writer %}
+                            <span class="badge badge-writer">Writer</span>
+                        {% endif %}
+                        
+                        {% if current_user.writer_request_pending %}
+                            <span class="badge badge-pending">Writer Request Pending</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="info-item">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span>{{ current_user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar me-2"></i>
+                        <span>Joined {{ current_user.date_joined.strftime('%B %Y') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-blog me-2"></i>
+                        <span>{{ user_posts|length }} Posts</span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    {% if current_user.is_writer or current_user.is_admin %}
+                        <a href="{{ url_for('create_post') }}" class="btn btn-pink w-100 mb-2">
+                            <i class="fas fa-plus me-2"></i>Create New Post
+                        </a>
+                    {% elif not current_user.writer_request_pending %}
+                        <form method="POST" action="{{ url_for('request_writer') }}">
+                            <button type="submit" class="btn btn-outline-pink w-100 mb-2">
+                                <i class="fas fa-pen me-2"></i>Request Writer Access
+                            </button>
+                        </form>
+                    {% endif %}
+                    
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-pink w-100">
+                            <i class="fas fa-cog me-2"></i>Admin Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <!-- User Posts -->
+            <div class="profile-content">
+                <div class="section-header mb-4">
+                    <h4 class="text-pink">My Posts</h4>
+                    {% if current_user.is_writer or current_user.is_admin %}
+                        <a href="{{ url_for('create_post') }}" class="btn btn-pink btn-sm">
+                            <i class="fas fa-plus me-1"></i>New Post
+                        </a>
+                    {% endif %}
+                </div>
+
+                {% if user_posts %}
+                    <div class="posts-list">
+                        {% for post in user_posts %}
+                            <div class="post-item">
+                                <div class="post-status">
+                                    {% if post.is_approved and post.is_published %}
+                                        <span class="status-badge published">
+                                            <i class="fas fa-check-circle"></i> Published
+                                        </span>
+                                    {% elif not post.is_approved %}
+                                        <span class="status-badge pending">
+                                            <i class="fas fa-clock"></i> Pending Review
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="post-content">
+                                    <h5 class="post-title">
+                                        {% if post.is_approved and post.is_published %}
+                                            <a href="{{ url_for('blog_detail', post_id=post.id) }}">{{ post.title }}</a>
+                                        {% else %}
+                                            {{ post.title }}
+                                        {% endif %}
+                                    </h5>
+                                    
+                                    <div class="post-meta">
+                                        <span class="badge badge-category">{{ post.category.name }}</span>
+                                        <span class="post-date">{{ post.date_created.strftime('%b %d, %Y') }}</span>
+                                        {% if post.is_published %}
+                                            <span class="post-votes">
+                                                <i class="fas fa-arrow-up text-success"></i> {{ post.upvotes }}
+                                                <i class="fas fa-arrow-down text-danger ms-2"></i> {{ post.downvotes }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <p class="post-summary">
+                                        {{ post.summary or (post.content[:150] + '...') }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center py-5">
+                        <i class="fas fa-blog text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No posts yet</h5>
+                        <p class="text-muted">
+                            {% if current_user.is_writer or current_user.is_admin %}
+                                Share your thoughts about rap music with the community!
+                            {% elif current_user.writer_request_pending %}
+                                Your writer request is pending approval.
+                            {% else %}
+                                Request writer access to start creating posts.
+                            {% endif %}
+                        </p>
+                        {% if current_user.is_writer or current_user.is_admin %}
+                            <a href="{{ url_for('create_post') }}" class="btn btn-pink mt-3">
+                                Create Your First Post
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

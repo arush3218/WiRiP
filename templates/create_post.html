@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Create Post - WiRiP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="create-post-header mb-4">
+                <h1 class="text-pink">
+                    <i class="fas fa-plus-circle me-2"></i>Create New Post
+                </h1>
+                <p class="text-muted">Share your rap music insights with the community</p>
+            </div>
+
+            <form method="POST" class="create-post-form">
+                <div class="mb-4">
+                    <label for="title" class="form-label">Post Title</label>
+                    <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                           placeholder="Enter an engaging title..." required>
+                    <div class="form-text">Make it catchy and descriptive</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="category_id" class="form-label">Category</label>
+                    <select class="form-select" id="category_id" name="category_id" required>
+                        <option value="">Select a category...</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="summary" class="form-label">Summary</label>
+                    <textarea class="form-control" id="summary" name="summary" rows="3" 
+                              placeholder="Write a brief summary of your post..."></textarea>
+                    <div class="form-text">This will be shown in blog previews (optional but recommended)</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="content" class="form-label">Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="15" 
+                              placeholder="Write your full post content here..." required></textarea>
+                    <div class="form-text">
+                        <div class="formatting-tips">
+                            <strong>Formatting Tips:</strong>
+                            <ul class="mb-0">
+                                <li>Use line breaks for paragraphs</li>
+                                <li>Write engaging content about rap music, artists, albums, or industry news</li>
+                                <li>Include your personal insights and opinions</li>
+                                <li>Reference specific songs, albums, or artists when relevant</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-pink btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Submit for Review
+                    </button>
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary btn-lg ms-3">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+
+                <div class="submission-info mt-4">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> Your post will be submitted for admin review before being published. 
+                        This helps maintain quality and ensures all content aligns with our community guidelines.
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar with writing tips -->
+        <div class="col-lg-4">
+            <div class="writing-tips">
+                <div class="tips-card">
+                    <h5 class="text-pink mb-3">
+                        <i class="fas fa-lightbulb me-2"></i>Writing Tips
+                    </h5>
+                    
+                    <div class="tip-item">
+                        <h6>Be Authentic</h6>
+                        <p>Share your genuine thoughts and experiences with rap music.</p>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <h6>Provide Context</h6>
+                        <p>Help readers understand the background of artists, albums, or trends you're discussing.</p>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <h6>Use Examples</h6>
+                        <p>Reference specific tracks, lyrics, or moments to support your points.</p>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <h6>Engage Your Audience</h6>
+                        <p>Ask questions or invite discussion to encourage reader engagement.</p>
+                    </div>
+                </div>
+
+                <div class="category-guide">
+                    <h5 class="text-pink mb-3">
+                        <i class="fas fa-tags me-2"></i>Category Guide
+                    </h5>
+                    
+                    <div class="category-guide-item">
+                        <strong>News:</strong> Industry updates, artist announcements, releases
+                    </div>
+                    
+                    <div class="category-guide-item">
+                        <strong>Album Review:</strong> Complete album analysis and ratings
+                    </div>
+                    
+                    <div class="category-guide-item">
+                        <strong>Song Review:</strong> Individual track breakdowns and critiques
+                    </div>
+                    
+                    <div class="category-guide-item">
+                        <strong>Discover New Artist:</strong> Spotlight on emerging or underrated artists
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Auto-resize textarea
+document.getElementById('content').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+
+// Character count for title
+const titleInput = document.getElementById('title');
+const titleCount = document.createElement('div');
+titleCount.className = 'form-text text-end';
+titleInput.parentNode.appendChild(titleCount);
+
+titleInput.addEventListener('input', function() {
+    const count = this.value.length;
+    titleCount.textContent = `${count}/100 characters`;
+    
+    if (count > 80) {
+        titleCount.classList.add('text-warning');
+    } else {
+        titleCount.classList.remove('text-warning');
+    }
+});
+
+// Form validation
+document.querySelector('.create-post-form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const category = document.getElementById('category_id').value;
+    
+    if (!title || !content || !category) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+        return false;
+    }
+    
+    if (title.length < 5) {
+        e.preventDefault();
+        alert('Title must be at least 5 characters long.');
+        return false;
+    }
+    
+    if (content.length < 50) {
+        e.preventDefault();
+        alert('Content must be at least 50 characters long.');
+        return false;
+    }
+});
+</script>
+{% endblock %}
