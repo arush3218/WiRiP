@@ -3,56 +3,95 @@
 {% block title %}Join Crew - WiRiP{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="join-crew-header text-center mb-5">
-                <h1 class="text-pink mb-3">
-                    <i class="fas fa-users me-2"></i>Join the Crew
-                </h1>
-                <p class="lead text-light">
-                    Become a writer and share your passion for rap music with our community
-                </p>
-            </div>
+<style>
+    .benefit-card {
+        background: rgba(15, 15, 15, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 0, 110, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .benefit-card:hover {
+        border-color: rgba(255, 0, 110, 0.8);
+        transform: translateY(-4px);
+    }
+    .benefit-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background: rgba(255, 0, 110, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    .faq-card {
+        background: rgba(15, 15, 15, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 0, 110, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
 
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-pen-fancy"></i>
-                        </div>
-                        <h4>Share Your Voice</h4>
-                        <p>Write about your favorite artists, albums, and the latest trends in rap music.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <h4>Discover New Talent</h4>
-                        <p>Help the community discover emerging artists and hidden gems in the rap scene.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <h4>Engage with Readers</h4>
-                        <p>Build a following and engage with other rap enthusiasts through your content.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <h4>Build Your Reputation</h4>
-                        <p>Gain recognition as a trusted voice in the rap music community.</p>
-                    </div>
-                </div>
+<!-- Hero Section -->
+<section style="position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5rem 1rem;">
+    <!-- Gradient background -->
+    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(131, 56, 236, 0.1), rgba(0, 245, 255, 0.1));"></div>
+
+    <div style="position: relative; z-index: 10; max-width: 56rem; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 3.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 1.5rem; color: white;">
+            Join the <span style="background: linear-gradient(135deg, #ff006e, #8338ec, #00f5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">WiRiP Crew</span>
+        </h1>
+
+        <p style="font-size: 1.25rem; color: #999; margin-bottom: 2rem; max-width: 42rem; margin-left: auto; margin-right: auto;">
+            Become a contributor to the world's most authentic rap journalism platform. Share your voice, influence the conversation, and build your legacy as a hip-hop writer.
+        </p>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section style="max-width: 1280px; margin: 0 auto; padding: 5rem 1rem;">
+    <h2 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-align: center; margin-bottom: 3rem; color: white;">
+        Why Join WiRiP?
+    </h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-pen-fancy" style="color: #ff006e; font-size: 1.5rem;"></i>
             </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.125rem; color: white; margin-bottom: 0.5rem;">Write Your Story</h3>
+            <p style="font-size: 0.875rem; color: #999;">Share your unique perspective on hip-hop and rap culture with a growing audience of passionate fans.</p>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-users" style="color: #ff006e; font-size: 1.5rem;"></i>
+            </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.125rem; color: white; margin-bottom: 0.5rem;">Join Our Community</h3>
+            <p style="font-size: 0.875rem; color: #999;">Connect with other writers, editors, and music enthusiasts who share your passion for authentic journalism.</p>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-bolt" style="color: #ff006e; font-size: 1.5rem;"></i>
+            </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.125rem; color: white; margin-bottom: 0.5rem;">Reach & Influence</h3>
+            <p style="font-size: 0.875rem; color: #999;">Build your personal brand and reach thousands of readers across multiple platforms.</p>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-trophy" style="color: #ff006e; font-size: 1.5rem;"></i>
+            </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.125rem; color: white; margin-bottom: 0.5rem;">Recognition</h3>
+            <p style="font-size: 0.875rem; color: #999;">Get featured on our platform and build a portfolio as a respected hip-hop journalist.</p>
+        </div>
+    </div>
+</section>
 
             <div class="writer-requirements mb-5">
                 <h3 class="text-pink mb-3">What We're Looking For</h3>
@@ -130,58 +169,86 @@
                 </div>
             </div>
 
-            {% if current_user.is_authenticated %}
-                {% if current_user.is_writer or current_user.is_admin %}
-                    <div class="text-center">
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle me-2"></i>
-                            You're already part of the crew! Start creating amazing content.
-                        </div>
-                        <a href="{{ url_for('create_post') }}" class="btn btn-pink btn-lg">
-                            <i class="fas fa-plus me-2"></i>Create Your First Post
-                        </a>
-                    </div>
-                {% elif current_user.writer_request_pending %}
-                    <div class="text-center">
-                        <div class="alert alert-info">
-                            <i class="fas fa-clock me-2"></i>
-                            Your writer request is pending approval. We'll notify you once it's reviewed.
-                        </div>
-                        <a href="{{ url_for('profile') }}" class="btn btn-outline-pink">
-                            View Profile
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="text-center">
-                        <div class="request-writer-section">
-                            <h3 class="text-pink mb-3">Ready to Join?</h3>
-                            <p class="mb-4">Submit your request to become a writer and start sharing your rap music insights with our community.</p>
-                            <form method="POST" action="{{ url_for('request_writer') }}">
-                                <button type="submit" class="btn btn-pink btn-lg">
-                                    <i class="fas fa-paper-plane me-2"></i>Request Writer Access
-                                </button>
-                            </form>
-                            <p class="text-muted mt-3">
-                                <small>Your request will be reviewed by our admin team. This usually takes 1-2 days.</small>
-                            </p>
-                        </div>
-                    </div>
-                {% endif %}
-            {% else %}
-                <div class="text-center">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        You need to be logged in to request writer access.
-                    </div>
-                    <a href="{{ url_for('register') }}" class="btn btn-pink btn-lg me-3">
-                        <i class="fas fa-user-plus me-2"></i>Create Account
-                    </a>
-                    <a href="{{ url_for('login') }}" class="btn btn-outline-pink btn-lg">
-                        <i class="fas fa-sign-in-alt me-2"></i>Login
-                    </a>
-                </div>
-            {% endif %}
+<!-- Call to Action -->
+<section style="max-width: 1280px; margin: 0 auto; padding: 5rem 1rem; text-align: center;">
+    {% if current_user.is_authenticated %}
+        {% if current_user.is_writer or current_user.is_admin %}
+            <div style="padding: 2rem; background: rgba(0, 208, 132, 0.1); border: 1px solid rgba(0, 208, 132, 0.3); border-radius: 12px; margin-bottom: 2rem;">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: #00d084; margin-bottom: 1rem;"></i>
+                <h3 style="font-size: 1.5rem; color: white; margin-bottom: 1rem;">You're already part of the crew!</h3>
+                <p style="color: #999; margin-bottom: 1.5rem;">Start creating amazing content and share your voice with the community.</p>
+                <a href="{{ url_for('create_post') }}" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; border-radius: 8px; text-decoration: none;">
+                    <i class="fas fa-plus" style="margin-right: 0.5rem;"></i>Create Your First Post
+                </a>
+            </div>
+        {% elif current_user.writer_request_pending %}
+            <div style="padding: 2rem; background: rgba(58, 134, 255, 0.1); border: 1px solid rgba(58, 134, 255, 0.3); border-radius: 12px; margin-bottom: 2rem;">
+                <i class="fas fa-clock" style="font-size: 3rem; color: #3a86ff; margin-bottom: 1rem;"></i>
+                <h3 style="font-size: 1.5rem; color: white; margin-bottom: 1rem;">Request Pending</h3>
+                <p style="color: #999; margin-bottom: 1.5rem;">Your writer request is pending approval. We'll notify you once it's reviewed.</p>
+                <a href="{{ url_for('profile') }}" style="display: inline-block; padding: 0.75rem 2rem; border: 2px solid #ff006e; color: #ff006e; font-weight: 600; border-radius: 8px; text-decoration: none;">
+                    View Profile
+                </a>
+            </div>
+        {% else %}
+            <div>
+                <h2 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 1rem;">Ready to Join?</h2>
+                <p style="font-size: 1.125rem; color: #999; margin-bottom: 2rem; max-width: 42rem; margin-left: auto; margin-right: auto;">Submit your request to become a writer and start sharing your rap music insights with our community.</p>
+                <form method="POST" action="{{ url_for('request_writer') }}">
+                    <button type="submit" style="padding: 1rem 3rem; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; font-size: 1.125rem; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3); transition: all 0.3s;">
+                        <i class="fas fa-paper-plane" style="margin-right: 0.5rem;"></i>Request Writer Access
+                    </button>
+                </form>
+                <p style="color: #666; margin-top: 1rem; font-size: 0.875rem;">Your request will be reviewed by our admin team. This usually takes 1-2 days.</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div>
+            <div style="padding: 2rem; background: rgba(58, 134, 255, 0.1); border: 1px solid rgba(58, 134, 255, 0.3); border-radius: 12px; margin-bottom: 2rem; max-width: 42rem; margin-left: auto; margin-right: auto;">
+                <i class="fas fa-info-circle" style="font-size: 2rem; color: #3a86ff; margin-bottom: 1rem;"></i>
+                <p style="color: #999; margin: 0;">You need to be logged in to request writer access.</p>
+            </div>
+            <a href="{{ url_for('register') }}" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; border-radius: 8px; text-decoration: none; margin-right: 1rem;">
+                <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Create Account
+            </a>
+            <a href="{{ url_for('login') }}" style="display: inline-block; padding: 0.75rem 2rem; border: 2px solid #ff006e; color: #ff006e; font-weight: 600; border-radius: 8px; text-decoration: none;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Login
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+<!-- FAQ Section -->
+<section style="max-width: 1024px; margin: 0 auto; padding: 5rem 1rem;">
+    <h2 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-align: center; margin-bottom: 3rem; color: white;">
+        Frequently Asked Questions
+    </h2>
+
+    <div>
+        <div class="faq-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 0.5rem;">What kind of writers are you looking for?</h3>
+            <p style="color: #999; margin: 0;">We welcome writers of all backgrounds who are passionate about hip-hop journalism. Whether you specialize in album reviews, artist profiles, industry news, or cultural commentary, we want to hear from you.</p>
+        </div>
+
+        <div class="faq-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 0.5rem;">Do I need prior journalism experience?</h3>
+            <p style="color: #999; margin: 0;">Not necessarily. We value authentic passion and unique perspectives. If you're dedicated to producing high-quality content about hip-hop culture, we'd love to work with you.</p>
+        </div>
+
+        <div class="faq-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 0.5rem;">How often will I write?</h3>
+            <p style="color: #999; margin: 0;">Frequency is flexible. You can contribute as much or as little as you want. Some writers publish weekly, others contribute monthly. We adapt to your schedule.</p>
+        </div>
+
+        <div class="faq-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 0.5rem;">Is this a paid position?</h3>
+            <p style="color: #999; margin: 0;">Currently, positions are volunteer-based as we grow our platform. However, we offer exposure, professional experience, and the opportunity to build your portfolio in hip-hop journalism.</p>
+        </div>
+
+        <div class="faq-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 0.5rem;">How long does the review process take?</h3>
+            <p style="color: #999; margin: 0;">We typically review applications within 5-7 business days. You'll hear back from us via email with next steps.</p>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

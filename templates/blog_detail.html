@@ -3,149 +3,209 @@
 {% block title %}{{ post.title }} - WiRiP{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Blog Header -->
-            <div class="blog-header mb-4">
-                <div class="blog-meta mb-3">
-                    <span class="badge badge-category">{{ post.category.name }}</span>
-                    <span class="blog-date ms-2">{{ post.date_published.strftime('%B %d, %Y') }}</span>
-                </div>
-                <h1 class="blog-title-detail text-pink">{{ post.title }}</h1>
-                <div class="blog-author-info mt-3">
-                    <div class="author-details">
-                        <i class="fas fa-user me-2"></i>
-                        <span class="author-name">{{ post.author.username }}</span>
-                        {% if post.author.is_admin %}
-                            <span class="badge badge-admin ms-2">Admin</span>
-                        {% elif post.author.is_writer %}
-                            <span class="badge badge-writer ms-2">Writer</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+<style>
+    .vote-btn-active {
+        background: rgba(255, 0, 110, 0.2) !important;
+        color: #ff006e !important;
+        border-color: #ff006e !important;
+    }
+    .vote-btn-fixed {
+        position: fixed;
+        left: 2rem;
+        top: 24rem;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        background: rgba(15, 15, 15, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+    }
+    .vote-btn-fixed:hover {
+        border-color: #ff006e;
+        color: #ff006e;
+    }
+    @media (max-width: 1024px) {
+        .vote-btn-fixed {
+            display: none;
+        }
+    }
+</style>
 
-            <!-- Blog Content -->
-            <div class="blog-content mb-4">
-                {{ post.content | nl2br | safe }}
-            </div>
+<!-- Hero Image Section -->
+<div style="position: relative; width: 100%; height: 400px; overflow: hidden;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255, 0, 110, 0.3), rgba(131, 56, 236, 0.3)); display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-music" style="font-size: 6rem; color: rgba(255, 255, 255, 0.1);"></i>
+    </div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, transparent 50%, #0a0a0a 100%);"></div>
+</div>
 
-            <!-- Voting Section -->
-            {% if current_user.is_authenticated %}
-                <div class="voting-section mb-4">
-                    <div class="vote-buttons">
-                        <button class="vote-btn upvote-btn {% if user_vote and user_vote.is_upvote %}active{% endif %}" 
-                                data-post-id="{{ post.id }}" 
-                                data-vote-type="true">
-                            <i class="fas fa-arrow-up"></i>
-                            <span class="vote-count" id="upvote-count">{{ post.upvotes }}</span>
-                        </button>
-                        <button class="vote-btn downvote-btn {% if user_vote and not user_vote.is_upvote %}active{% endif %}" 
-                                data-post-id="{{ post.id }}" 
-                                data-vote-type="false">
-                            <i class="fas fa-arrow-down"></i>
-                            <span class="vote-count" id="downvote-count">{{ post.downvotes }}</span>
-                        </button>
-                    </div>
-                    <div class="score-display">
-                        Score: <span id="score-count" class="text-pink">{{ post.score }}</span>
-                    </div>
+<div style="max-width: 56rem; margin: 0 auto; padding: 0 1rem; margin-top: -6rem; position: relative; z-index: 10; margin-bottom: 3rem;">
+    <!-- Article Header -->
+    <div style="margin-bottom: 2rem;">
+        <div style="display: inline-block; margin-bottom: 1rem; padding: 4px 12px; border-radius: 20px; background: rgba(255, 0, 110, 0.2); color: #ff006e; font-size: 0.875rem; font-weight: 600;">
+            {{ post.category.name }}
+        </div>
+
+        <h1 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: white; margin-bottom: 1.5rem; line-height: 1.2;">
+            {{ post.title }}
+        </h1>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; color: #999; font-size: 0.875rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: rgba(255, 0, 110, 0.2); display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #ff006e; font-weight: 700; font-size: 1.125rem;">{{ post.author.username[0] }}</span>
                 </div>
-            {% else %}
-                <div class="voting-section-guest mb-4">
-                    <div class="vote-display">
-                        <span class="vote-stat">
-                            <i class="fas fa-arrow-up text-success"></i> {{ post.upvotes }}
-                        </span>
-                        <span class="vote-stat ms-3">
-                            <i class="fas fa-arrow-down text-danger"></i> {{ post.downvotes }}
-                        </span>
-                        <span class="score-display ms-3">
-                            Score: <span class="text-pink">{{ post.score }}</span>
-                        </span>
-                    </div>
-                    <p class="text-muted mt-2">
-                        <a href="{{ url_for('login') }}" class="text-pink">Login</a> to vote on this post
+                <div>
+                    <p style="font-weight: 600; color: white; margin: 0;">{{ post.author.username }}</p>
+                    <p style="margin: 0;">
+                        {% if post.author.is_admin %}Admin
+                        {% elif post.author.is_writer %}Writer
+                        {% else %}Contributor{% endif %}
                     </p>
                 </div>
-            {% endif %}
-
-            <!-- Share Section -->
-            <div class="share-section mb-4">
-                <h5 class="text-pink mb-3">Share this post</h5>
-                <div class="share-buttons">
-                    <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.url }}" 
-                       target="_blank" class="share-btn twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" 
-                       target="_blank" class="share-btn facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://www.reddit.com/submit?url={{ request.url }}&title={{ post.title }}" 
-                       target="_blank" class="share-btn reddit">
-                        <i class="fab fa-reddit"></i>
-                    </a>
-                    <button class="share-btn copy-link" onclick="copyLink()">
-                        <i class="fas fa-link"></i>
-                    </button>
-                </div>
             </div>
-
-            <!-- Navigation -->
-            <div class="blog-navigation">
-                <a href="{{ url_for('blogs') }}" class="btn btn-outline-pink">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Blogs
-                </a>
-                <a href="{{ url_for('blogs', category=post.category.name) }}" class="btn btn-pink ms-2">
-                    More {{ post.category.name }}
-                </a>
-            </div>
+            <span>•</span>
+            <span>{{ post.date_published.strftime('%B %d, %Y') }}</span>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <div class="sidebar">
-                <!-- Author Info -->
-                <div class="sidebar-card">
-                    <h5 class="text-pink mb-3">About the Author</h5>
-                    <div class="author-card">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h6>{{ post.author.username }}</h6>
-                            {% if post.author.is_admin %}
-                                <span class="badge badge-admin">Admin</span>
-                            {% elif post.author.is_writer %}
-                                <span class="badge badge-writer">Writer</span>
-                            {% endif %}
-                            <p class="text-muted">Member since {{ post.author.date_joined.strftime('%B %Y') }}</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Fixed Vote Button (Desktop) -->
+        {% if current_user.is_authenticated %}
+        <button onclick="votePost(true)" id="voteButtonFixed" class="vote-btn-fixed {% if user_vote and user_vote.is_upvote %}vote-btn-active{% endif %}">
+            <i class="fas fa-thumbs-up" style="font-size: 1.5rem;"></i>
+            <span style="font-size: 0.75rem; font-weight: 700;" id="voteCountFixed">{{ post.upvotes }}</span>
+        </button>
+        {% endif %}
+    </div>
 
-                <!-- Related Categories -->
-                <div class="sidebar-card">
-                    <h5 class="text-pink mb-3">Explore Categories</h5>
-                    <div class="category-links">
-                        <a href="{{ url_for('blogs', category='News') }}" class="category-link">
-                            <i class="fas fa-newspaper me-2"></i>News
-                        </a>
-                        <a href="{{ url_for('blogs', category='Album Review') }}" class="category-link">
-                            <i class="fas fa-compact-disc me-2"></i>Album Reviews
-                        </a>
-                        <a href="{{ url_for('blogs', category='Song Review') }}" class="category-link">
-                            <i class="fas fa-music me-2"></i>Song Reviews
-                        </a>
-                        <a href="{{ url_for('blogs', category='Discover New Artist') }}" class="category-link">
-                            <i class="fas fa-star me-2"></i>Discover Artists
-                        </a>
-                    </div>
-                </div>
+    <!-- Blog Content -->
+    <article style="margin-bottom: 3rem;">
+        <div style="background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 2rem;">
+            <div style="color: white; line-height: 1.8; font-size: 1.125rem;">
+                {{ post.content | nl2br | safe }}
             </div>
         </div>
+    </article>
+
+    <!-- Mobile Vote & Share Buttons -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
+        {% if current_user.is_authenticated %}
+        <button onclick="votePost(true)" id="voteButtonMobile" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; {% if user_vote and user_vote.is_upvote %}opacity: 0.7;{% endif %}">
+            <i class="fas fa-thumbs-up"></i>
+            <span id="voteTextMobile">{% if user_vote and user_vote.is_upvote %}Voted{% else %}Vote{% endif %}</span>
+            (<span id="voteCountMobile">{{ post.upvotes }}</span>)
+        </button>
+        {% else %}
+        <a href="{{ url_for('login') }}" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; text-decoration: none; transition: all 0.3s;">
+            <i class="fas fa-thumbs-up"></i>
+            Vote ({{ post.upvotes }})
+        </a>
+        {% endif %}
+        <button onclick="sharePost()" style="padding: 0.75rem 1.5rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: transparent; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s;">
+            <i class="fas fa-share-alt"></i>
+            Share
+        </button>
+    </div>
+
+    <!-- Share Section (Desktop) -->
+    <div style="margin-bottom: 3rem;">
+        <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.25rem; color: white; margin-bottom: 1rem;">
+            Share this post
+        </h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.url }}" 
+               target="_blank" 
+               style="padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(29, 161, 242, 0.5); color: #1DA1F2; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+                <i class="fab fa-twitter"></i>
+                Twitter
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" 
+               target="_blank" 
+               style="padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(24, 119, 242, 0.5); color: #1877F2; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+                <i class="fab fa-facebook-f"></i>
+                Facebook
+            </a>
+            <a href="https://www.reddit.com/submit?url={{ request.url }}&title={{ post.title }}" 
+               target="_blank" 
+               style="padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 69, 0, 0.5); color: #FF4500; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+                <i class="fab fa-reddit"></i>
+                Reddit
+            </a>
+            <button onclick="copyLink()" 
+                    id="copyLinkBtn"
+                    style="padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+                <i class="fas fa-link"></i>
+                Copy Link
+            </button>
+        </div>
+    </div>
+
+    <!-- Related Posts -->
+    {% if related_posts %}
+    <div style="margin-top: 4rem;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 2rem; color: white; margin-bottom: 2rem;">
+            Related Posts
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            {% for related_post in related_posts[:3] %}
+            <a href="{{ url_for('blog_detail', post_id=related_post.id) }}" style="text-decoration: none;">
+                <div style="background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 0, 110, 0.3); border-radius: 16px; padding: 1.5rem; transition: all 0.3s; height: 100%;" 
+                     onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='rgba(255, 0, 110, 0.8)'; this.style.boxShadow='0 20px 40px rgba(255, 0, 110, 0.2)'"
+                     onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255, 0, 110, 0.3)'; this.style.boxShadow='none'">
+                    <div style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, rgba(255, 0, 110, 0.2), rgba(131, 56, 236, 0.2)); border: 1px solid rgba(255, 0, 110, 0.5); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: #ff006e; margin-bottom: 1rem;">
+                        {{ related_post.category.name }}
+                    </div>
+                    <h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.25rem; color: white; margin-bottom: 0.5rem; line-height: 1.4;">
+                        {{ related_post.title }}
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.6;">
+                        {{ related_post.content[:120] }}...
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.4); font-size: 0.75rem;">
+                        <i class="far fa-clock"></i>
+                        {{ related_post.created_at.strftime('%B %d, %Y') }}
+                        <span style="margin-left: auto; display: flex; align-items: center; gap: 0.25rem; color: #22c55e;">
+                            <i class="fas fa-thumbs-up" style="font-size: 0.75rem;"></i>
+                            {{ related_post.upvotes }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Comments Section -->
+    <div style="margin-top: 4rem; margin-bottom: 3rem;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 2rem; color: white; margin-bottom: 2rem;">
+            Comments
+        </h2>
+        <div style="background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 3rem; text-align: center;">
+            <i class="fas fa-comments" style="font-size: 3rem; color: rgba(255, 255, 255, 0.2); margin-bottom: 1rem;"></i>
+            <p style="color: rgba(255, 255, 255, 0.6); font-size: 1rem; margin-bottom: 1.5rem;">
+                {% if current_user.is_authenticated %}
+                Comments are coming soon! Stay tuned.
+                {% else %}
+                <a href="{{ url_for('login') }}" style="color: #ff006e; text-decoration: none; font-weight: 600;">Sign in</a> to be the first to comment when this feature launches.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem;">
+        <a href="{{ url_for('blogs') }}" style="padding: 0.75rem 1.5rem; border-radius: 8px; border: 1px solid rgba(255, 0, 110, 0.5); background: transparent; color: #ff006e; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+            <i class="fas fa-arrow-left"></i>
+            Back to Blogs
+        </a>
+        <a href="{{ url_for('blogs', category=post.category.name) }}" style="padding: 0.75rem 1.5rem; border-radius: 8px; background: linear-gradient(135deg, #ff006e, #8338ec); color: white; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+            More {{ post.category.name }}
+            <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
 </div>
 {% endblock %}
@@ -153,67 +213,73 @@
 {% block extra_scripts %}
 <script>
 // Voting functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const voteButtons = document.querySelectorAll('.vote-btn');
-    
-    voteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const postId = this.dataset.postId;
-            const isUpvote = this.dataset.voteType === 'true';
-            
-            fetch('/vote', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    post_id: parseInt(postId),
-                    is_upvote: isUpvote
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Update vote counts
-                document.getElementById('upvote-count').textContent = data.upvotes;
-                document.getElementById('downvote-count').textContent = data.downvotes;
-                document.getElementById('score-count').textContent = data.score;
-                
-                // Update button states
-                const upvoteBtn = document.querySelector('.upvote-btn');
-                const downvoteBtn = document.querySelector('.downvote-btn');
-                
-                upvoteBtn.classList.remove('active');
-                downvoteBtn.classList.remove('active');
-                
-                // Add active class based on current vote
-                if (isUpvote && this.classList.contains('active')) {
-                    // Removing upvote
-                } else if (!isUpvote && this.classList.contains('active')) {
-                    // Removing downvote
-                } else {
-                    this.classList.add('active');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+function votePost(isUpvote) {
+    fetch('/vote', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            post_id: {{ post.id }},
+            is_upvote: isUpvote
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update all vote count displays
+        const fixedBtn = document.getElementById('voteButtonFixed');
+        const mobileBtn = document.getElementById('voteButtonMobile');
+        
+        if (fixedBtn) {
+            document.getElementById('voteCountFixed').textContent = data.upvotes;
+            if (data.user_voted) {
+                fixedBtn.classList.add('vote-btn-active');
+            } else {
+                fixedBtn.classList.remove('vote-btn-active');
+            }
+        }
+        
+        if (mobileBtn) {
+            document.getElementById('voteCountMobile').textContent = data.upvotes;
+            document.getElementById('voteTextMobile').textContent = data.user_voted ? 'Voted' : 'Vote';
+            mobileBtn.style.opacity = data.user_voted ? '0.7' : '1';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to register vote. Please try again.');
     });
-});
+}
+
+// Share functionality
+function sharePost() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ post.title }}',
+            text: 'Check out this post on WiRiP',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        copyLink();
+    }
+}
 
 // Copy link functionality
 function copyLink() {
     navigator.clipboard.writeText(window.location.href).then(function() {
-        // Show temporary success message
-        const copyBtn = document.querySelector('.copy-link');
+        const copyBtn = document.getElementById('copyLinkBtn');
         const originalHTML = copyBtn.innerHTML;
-        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-        copyBtn.classList.add('success');
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        copyBtn.style.borderColor = '#22c55e';
+        copyBtn.style.color = '#22c55e';
         
         setTimeout(() => {
             copyBtn.innerHTML = originalHTML;
-            copyBtn.classList.remove('success');
+            copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            copyBtn.style.color = 'white';
         }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
     });
 }
 </script>

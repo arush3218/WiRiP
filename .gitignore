@@ -55,3 +55,14 @@ node_modules/
 
 # Local scripts outputs
 /tmp/
+
+# v0 code reference (not part of Flask app)
+code/
+
+# Template backups
+templates_old/
+
+# Documentation files (optional, keep if needed for reference)
+INTERVIEW_GUIDE.md
+jenkins.md
+ARCHITECTURE.md

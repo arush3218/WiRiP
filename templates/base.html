@@ -1,94 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Wirip - Rap Music Blog{% endblock %}</title>
+    <title>{% block title %}WiRiP - When It Rains It Pours{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Fjalla+One&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#000000',
+                        foreground: '#ffffff',
+                        card: '#0f0f0f',
+                        primary: '#ff006e',
+                        secondary: '#8338ec',
+                        accent: '#00f5ff',
+                        muted: '#2a2a2a',
+                        border: '#1a1a1a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body class="bg-background text-foreground min-h-screen">
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('home') }}">
-                <div class="brand-badge me-2">
-                    <i class="fas fa-music"></i>
-                </div>
-                <span class="brand-text">WiRiP</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('blogs') }}">Blogs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('join_crew') }}">Join Crew</a>
-                    </li>
-                </ul>
+    <nav class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{{ url_for('home') }}" class="flex items-center space-x-3 group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="music" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <span class="font-heading text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">WiRiP</span>
+                </a>
                 
-                <ul class="navbar-nav">
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{{ url_for('home') }}" class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200">Home</a>
+                    <a href="{{ url_for('blogs') }}" class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200">Blogs</a>
+                    <a href="{{ url_for('join_crew') }}" class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200">Join Crew</a>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i>{{ current_user.username }}
+                        <div class="relative">
+                            <button class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/5 transition-all duration-200" id="userMenuButton">
+                                <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+                                <span class="text-white">{{ current_user.username }}</span>
                                 {% if current_user.is_admin %}
-                                    <span class="badge badge-admin ms-1">Admin</span>
+                                    <span class="px-2 py-0.5 text-xs bg-primary/20 text-primary border border-primary/30 rounded-full">Admin</span>
                                 {% elif current_user.is_writer %}
-                                    <span class="badge badge-writer ms-1">Writer</span>
+                                    <span class="px-2 py-0.5 text-xs bg-secondary/20 text-secondary border border-secondary/30 rounded-full">Writer</span>
                                 {% endif %}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+                                <i data-lucide="chevron-down" class="w-4 h-4" id="userMenuChevron"></i>
+                            </button>
+                            
+                            <!-- Dropdown -->
+                            <div class="hidden absolute right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-xl overflow-hidden z-50" id="userMenuDropdown">
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-gray-300 hover:bg-primary/10 hover:text-primary transition-colors duration-200">Profile</a>
                                 {% if current_user.is_writer or current_user.is_admin %}
-                                    <li><a class="dropdown-item" href="{{ url_for('create_post') }}">Create Post</a></li>
+                                    <a href="{{ url_for('create_post') }}" class="block px-4 py-2 text-gray-300 hover:bg-primary/10 hover:text-primary transition-colors duration-200">Create Post</a>
                                 {% endif %}
                                 {% if current_user.is_admin %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+                                    <div class="border-t border-border"></div>
+                                    <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-gray-300 hover:bg-primary/10 hover:text-primary transition-colors duration-200">Admin Dashboard</a>
                                 {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                            </ul>
-                        </li>
+                                <div class="border-t border-border"></div>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-red-400 hover:bg-red-500/10 transition-colors duration-200">Logout</a>
+                            </div>
+                        </div>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                        </li>
+                        <a href="{{ url_for('login') }}" class="px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200">Login</a>
+                        <a href="{{ url_for('register') }}" class="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all duration-300">Sign Up</a>
                     {% endif %}
-                </ul>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden p-2 text-gray-300 hover:text-white" id="mobileMenuButton">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-card border-t border-border" id="mobileMenu">
+            <div class="px-4 py-3 space-y-2">
+                <a href="{{ url_for('home') }}" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5">Home</a>
+                <a href="{{ url_for('blogs') }}" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5">Blogs</a>
+                <a href="{{ url_for('join_crew') }}" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5">Join Crew</a>
             </div>
         </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div class="container mt-5 pt-4">
+    <div class="max-w-7xl mx-auto px-4 pt-4">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }} alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <div class="mb-4 p-4 rounded-lg border {% if category == 'error' %}bg-red-500/10 border-red-500/30 text-red-400{% elif category == 'success' %}bg-green-500/10 border-green-500/30 text-green-400{% else %}bg-blue-500/10 border-blue-500/30 text-blue-400{% endif %}">
+                        <div class="flex items-center justify-between">
+                            <p class="flex-1">{{ message }}</p>
+                            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-400 hover:text-white">
+                                <i data-lucide="x" class="w-5 h-5"></i>
+                            </button>
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -96,33 +135,104 @@
     </div>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="min-h-screen">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="text-pink">WiRiP</h5>
-                    <p class="mb-0">Your ultimate destination for rap music content, reviews, and discoveries.</p>
+    <footer class="border-t border-primary/20 mt-20 py-12 bg-black/50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-primary font-bold text-lg mb-4">WiRiP</h3>
+                    <p class="text-gray-400 text-sm">
+                        When It Rains It Pours - Your source for authentic rap journalism.
+                    </p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="social-links">
-                        <a href="#" class="text-pink me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-pink me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-pink me-3"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="text-pink"><i class="fab fa-spotify"></i></a>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('home') }}" class="text-gray-400 hover:text-primary transition-colors duration-200">Home</a></li>
+                        <li><a href="{{ url_for('blogs') }}" class="text-gray-400 hover:text-primary transition-colors duration-200">Blogs</a></li>
+                        <li><a href="{{ url_for('join_crew') }}" class="text-gray-400 hover:text-primary transition-colors duration-200">Join Crew</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Categories</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('blogs') }}?category=News" class="text-gray-400 hover:text-primary transition-colors duration-200">News</a></li>
+                        <li><a href="{{ url_for('blogs') }}?category=Album+Review" class="text-gray-400 hover:text-primary transition-colors duration-200">Album Reviews</a></li>
+                        <li><a href="{{ url_for('blogs') }}?category=Song+Review" class="text-gray-400 hover:text-primary transition-colors duration-200">Song Reviews</a></li>
+                        <li><a href="{{ url_for('blogs') }}?category=Discover+New+Artist" class="text-gray-400 hover:text-primary transition-colors duration-200">Discover Artists</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Follow Us</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
                     </div>
-                    <p class="mb-0 mt-2">&copy; 2025 WiRiP. All rights reserved.</p>
                 </div>
+            </div>
+            
+            <div class="border-t border-primary/20 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 WiRiP. All rights reserved. | When It Rains It Pours</p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // User menu dropdown toggle
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userMenuDropdown = document.getElementById('userMenuDropdown');
+        
+        if (userMenuButton && userMenuDropdown) {
+            // Toggle dropdown on button click
+            userMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userMenuDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+                    userMenuDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            userMenuDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    </script>
+    
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
