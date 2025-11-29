@@ -1,6 +1,4 @@
 ## WiRiP – Rap Music Blog (Flask)
-Dark themed rap blog with user roles, writer approvals, voting, and category‑based posts.
-
 ### Core Features
 - Auth (users, writers (approval), admins)
 - Categories: News, Album Review, Song Review, Discover New Artist
